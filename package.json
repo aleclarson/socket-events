@@ -13,5 +13,8 @@
   ],
   "dependencies": {
     "is-stream": "^1.1.0"
+  },
+  "devDependencies": {
+    "testpass": "^0.9.2"
   }
 }
