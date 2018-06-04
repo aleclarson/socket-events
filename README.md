@@ -1,6 +1,6 @@
 # socket-events
 
-[![npm v1.1.1](https://badge.fury.io/js/socket-events.svg)](https://www.npmjs.com/package/socket-events)
+[![npm version](https://badge.fury.io/js/socket-events.svg)](https://www.npmjs.com/package/socket-events)
 [![](https://david-dm.org/aleclarson/socket-events.svg)](https://www.npmjs.com/package/socket-events)
 [![Gitter](https://img.shields.io/gitter/room/socket-events/support.svg)](https://gitter.im/socket-events/support)
 
@@ -58,7 +58,7 @@ of node's built-in `EventEmitter` class for those features.
 
 ```js
 const ee = se.events({
-  '*': console.log, // add listeners v1.1.0 the constructor
+  '*': console.log, // add listeners via the constructor
 });
 
 // listen to all events (the '*' is optional)
