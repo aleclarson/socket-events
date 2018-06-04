@@ -37,16 +37,16 @@ Object.assign(EventEmitter.prototype, {
     if (arguments.length == 1) {
       fn = name; name = '*';
     }
-    const list = listeners[name];
+    const list = this._events[name];
     if (list) list.push(fn);
-    else listeners[name] = [fn];
+    else this._events[name] = [fn];
     return fn;
   },
   off(name, fn) {
     if (arguments.length == 1) {
       fn = name; name = '*';
     }
-    const list = listeners[name];
+    const list = this._events[name];
     if (!list) return;
     if (list.length !== 1) {
       const i = list.indexOf(fn);
