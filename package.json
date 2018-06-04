@@ -1,0 +1,17 @@
+{
+  "name": "socket-events",
+  "version": "1.0.0",
+  "description": "Minimal IPC with event emitters",
+  "repository": "https://github.com/aleclarson/socket-events.git",
+  "license": "MIT",
+  "engines": {
+    "node": ">=4"
+  },
+  "files": [
+    "index.js",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "is-stream": "^1.1.0"
+  }
+}
