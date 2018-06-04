@@ -51,7 +51,7 @@ Socket events have a length, an event name, and an event body.
 22;foo;{"hello":"world"};
 ```
 
-The leading number indicates the number of UTF-8 characters that come after
+The leading number indicates the number of bytes that come after
 its semi-colon.
 
 The event name must not contain semi-colons or be empty.
