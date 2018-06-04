@@ -2,46 +2,71 @@
 
 Inter-process communication with event emitters. Minimal surface area.
 
+Compatible with NodeJS 4.0.0+
+
 ```js
-import se from 'socket-events';
+const se = require('socket-events');
 
-// in process A:
-const emit = se.writer(socket); // `socket` must be writable
+// emit JSON events using any writable stream
+const emit = se.writer(socket);
 
-emit('foo', {hello: 'world'}); // sends '22;foo;{"hello":"world"};'
-emit('bar');                   // sends '4;bar;'
+emit('foo', {hello: 'world'}); // emits '22;foo;{"hello":"world"};'
+emit('bar');                   // emits '4;bar;'
 
-// in process B:
-const listen = se.reader(socket); // `socket` must be readable
-
-listen('foo', (data) => {
-  typeof data; // => 'object'
+// handle the events using any readable stream
+const events = se.reader(socket, {
+  foo: (data) => console.log('foo:', data),
+  bar: () => console.log('bar'),
+  '*': (name, data) => console.log({name, data}),
 });
 
-listen.off('foo', func); // remove one listener
-listen.off('foo');       // remove all "foo" listeners
-listen.off();            // remove all listeners
+// bring your own event emitter (optional)
+const EventEmitter = require('events');
+const events = new EventEmitter();
+se.reader(socket, events);
+
+// use the encoder and decoder directly
+const decode = se.decoder(events);
+socket.on('data', decode);
+socket.write(se.encode('foo', {hello: 'world'}));
 ```
 
-Readers avoid parsing the event body if the event name has no listeners.
+Sockets are duplex streams, which means you can use both `se.reader` and
+`se.writer` on the same socket for bi-directional events.
 
 The `se.writer` and `se.reader` functions work with any stream, not just
-sockets!
+sockets.
 
-### Catch-all listeners
+The decoder avoids parsing the event body if an event has no listeners.
 
-If you want to handle every event, use a catch-all listener.
+### Event emitters
+
+The `se.reader` function can be passed any object with an `emit` method like this:
+- `emit(name: string, arg1: any, arg2: any) : any`
+
+The `se.events` function returns a custom `EventEmitter` object that is
+highly optimized for the minimal use case. There is no support for one-time
+listeners, `addListener` or `removeListener` events, or `error` events that
+throw when no listeners exist. You should provide `se.reader` with an instance
+of node's built-in `EventEmitter` class for those features.
 
 ```js
-// Either way works!
-listen((name, data) => {});
-listen('*', (name, data) => {});
+const ee = se.events({
+  '*': console.log, // add listeners via the constructor
+});
+// listen to all events (the '*' is optional)
+ee.on('*', (name, data) => {});
+// listen to one event
+const listener = ee.on('foo', (data) => {});
+// emit an event manually
+ee.emit('foo', 123);
+// remove a listener
+ee.off('foo', listener);
+// remove all listeners of an event
+ee.clear('foo');
+// remove all listeners of all events
+ee.clear();
 ```
-
-### Duplex streams
-
-TCP sockets are duplex streams, which means you can use both `se.reader`
-and `se.writer` on the same socket for bi-directional events!
 
 ### Event serialization
 
