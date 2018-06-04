@@ -11,7 +11,6 @@ function noop() {}
 const a = new Duplex({
   read: noop,
   write(chunk, enc, cb) {
-    console.log('a.write:', chunk);
     b.push(chunk);
     cb();
   }
@@ -27,7 +26,6 @@ a.receive = se.reader(a);
 const b = new Duplex({
   read: noop,
   write(chunk, enc, cb) {
-    console.log('b.write:', chunk);
     a.push(chunk);
     cb();
   }
@@ -44,6 +42,15 @@ a.receive(console.log);
 b.receive(console.log);
 
 a.send('a:foo', {hello: 'world'});
-b.send('b:foo', {hello: 'world'});
+b.send('b:foo');
 
-setTimeout(noop, 2000);
+process.nextTick(() => {
+  // Add a listener for "b:ok"
+  a.receive('b:ok', console.log);
+
+  // Remove the catch-all listener.
+  a.receive.off(console.log);
+
+  // This event should only be handled once.
+  b.send('b:ok', 200);
+});
