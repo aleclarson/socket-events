@@ -39,6 +39,8 @@ sockets.
 
 The decoder avoids parsing the event body if an event has no listeners.
 
+&nbsp;
+
 ### Event emitters
 
 The `se.reader` function can be passed any object with an `emit` method like this:
@@ -54,19 +56,27 @@ of node's built-in `EventEmitter` class for those features.
 const ee = se.events({
   '*': console.log, // add listeners via the constructor
 });
+
 // listen to all events (the '*' is optional)
 ee.on('*', (name, data) => {});
+
 // listen to one event
 const listener = ee.on('foo', (data) => {});
+
 // emit an event manually
 ee.emit('foo', 123);
+
 // remove a listener
 ee.off('foo', listener);
+
 // remove all listeners of an event
 ee.clear('foo');
+
 // remove all listeners of all events
 ee.clear();
 ```
+
+&nbsp;
 
 ### Event serialization
 
@@ -87,6 +97,8 @@ The event body must be JSON-compliant, unless it's omitted.
 4;bar;  // an event with no body
 ```
 
+&nbsp;
+
 ### `encode` and `decoder`
 
 The `encode` and `decoder` functions are used internally and in tests.
@@ -99,6 +111,8 @@ se.decoder({
   }
 })(msg);
 ```
+
+&nbsp;
 
 ## Install
 
