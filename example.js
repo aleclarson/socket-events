@@ -11,13 +11,13 @@ function noop() {}
 const a = new Duplex({
   read: noop,
   write(chunk, enc, cb) {
-    b.push(chunk);
+    b.push(chunk, enc);
     cb();
   }
 });
 
 a.send = se.writer(a);
-a.receive = se.reader(a);
+a.events = se.reader(a);
 
 //
 // Setup the second bi-directional stream.
@@ -26,31 +26,37 @@ a.receive = se.reader(a);
 const b = new Duplex({
   read: noop,
   write(chunk, enc, cb) {
-    a.push(chunk);
+    a.push(chunk, enc);
     cb();
   }
 });
 
 b.send = se.writer(b);
-b.receive = se.reader(b);
+se.reader(b, b); // use the stream as our event emitter!
 
 //
 // Try it out!
 //
 
-a.receive(console.log);
-b.receive(console.log);
+a.events.on(console.log);
+b.on('*', console.log);
 
-a.send('a:foo', {hello: 'world'});
-b.send('b:foo');
+// send nothing
+a.send('a:foo');
 
-process.nextTick(() => {
+// send an object
+b.send('b:foo', {hello: 'world'});
+
+// send a string
+b.send('b:cow', 'm' + 'o'.repeat(50));
+
+setTimeout(() => {
   // Add a listener for "b:ok"
-  a.receive('b:ok', console.log);
+  a.events.on('b:ok', console.log);
 
   // Remove the catch-all listener.
-  a.receive.off(console.log);
+  a.events.off(console.log);
 
   // This event should only be handled once.
   b.send('b:ok', 200);
-});
+}, 100);
