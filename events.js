@@ -65,18 +65,15 @@ Object.assign(EventEmitter.prototype, {
 });
 
 function emit(list, $1, $2) {
-  let i = 0, len = typeof list == 'object' ? list.length : 0;
+  let i = 0, len = list.length;
   switch (arguments.length) {
     case 1:
-      if (len == 0) return list();
       for (; i < len; i++) list[i]();
       break;
     case 2:
-      if (len == 0) return list($1);
       for (; i < len; i++) list[i]($1);
       break;
     case 3:
-      if (len == 0) return list($1, $2);
       for (; i < len; i++) list[i]($1, $2);
       break;
   }
