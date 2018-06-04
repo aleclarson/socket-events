@@ -58,7 +58,7 @@ of node's built-in `EventEmitter` class for those features.
 
 ```js
 const ee = se.events({
-  '*': console.log, // add listeners via the constructor
+  '*': console.log, // add listeners v1.1.0 the constructor
 });
 
 // listen to all events (the '*' is optional)
