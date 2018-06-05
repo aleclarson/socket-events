@@ -2,12 +2,12 @@
 const isReadable = require('is-stream').readable;
 const isWritable = require('is-stream').writable;
 
-const EventEmitter = require('./events');
-
 const se = exports;
 
+se.EventEmitter = require('./events');
+
 se.events = function(events) {
-  return new EventEmitter(events);
+  return new se.EventEmitter(events);
 };
 
 se.reader = function(stream, events) {
