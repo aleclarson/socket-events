@@ -1,6 +1,6 @@
 {
   "name": "socket-events",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Minimal RPC with event emitters",
   "repository": "https://github.com/aleclarson/socket-events.git",
   "license": "MIT",
