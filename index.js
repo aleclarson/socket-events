@@ -1,13 +1,12 @@
 'use strict';
 const isReadable = require('is-stream').readable;
 const isWritable = require('is-stream').writable;
+const Emitter = require('@cush/events');
 
 const se = exports;
 
-se.EventEmitter = require('./events');
-
 se.events = function(events) {
-  return new se.EventEmitter(events);
+  return new Emitter(events);
 };
 
 se.reader = function(stream, events) {
