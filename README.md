@@ -4,9 +4,9 @@
 [![](https://david-dm.org/aleclarson/socket-events.svg)](https://www.npmjs.com/package/socket-events)
 [![Gitter](https://img.shields.io/gitter/room/socket-events/support.svg)](https://gitter.im/socket-events/support)
 
-Inter-process communication with event emitters. Minimal surface area.
+Minimal RPC with event emitters
 
-Compatible with NodeJS 4.0.0+
+Compatible with NodeJS 6.0.0+
 
 ```js
 const se = require('socket-events');
@@ -35,11 +35,9 @@ socket.on('data', decode);
 socket.write(se.encode('foo', {hello: 'world'}));
 ```
 
-Sockets are duplex streams, which means you can use both `se.reader` and
-`se.writer` on the same socket for bi-directional events.
+Sockets are duplex streams, which means you can use both `se.reader` and `se.writer` on the same socket for bi-directional events.
 
-The `se.writer` and `se.reader` functions work with any stream, not just
-sockets.
+The `se.writer` and `se.reader` functions work with any stream, not just sockets.
 
 The decoder avoids parsing the event body if an event has no listeners.
 
@@ -50,18 +48,16 @@ The decoder avoids parsing the event body if an event has no listeners.
 The `se.reader` function can be passed any object with an `emit` method like this:
 - `emit(name: string, arg1: any, arg2: any) : any`
 
-The `se.events` function returns a custom `EventEmitter` object that is
-highly optimized for the minimal use case. There is no support for one-time
-listeners, `addListener` or `removeListener` events, or `error` events that
-throw when no listeners exist. You should provide `se.reader` with an instance
-of node's built-in `EventEmitter` class for those features.
+The `se.events` function returns a custom `EventEmitter` object that is highly optimized for the minimal use case. There is no support for one-time listeners, `addListener` or `removeListener` events, or `error` events that throw when no listeners exist. You should provide `se.reader` with an instance of node's built-in `EventEmitter` class for those features.
 
 ```js
+// add listeners via the constructor
 const ee = se.events({
-  '*': console.log, // add listeners via the constructor
+  foo: console.log, // values can be functions
+  bar: [],          // or arrays of functions
 });
 
-// listen to all events (the '*' is optional)
+// listen to all events
 ee.on('*', (name, data) => {});
 
 // listen to one event
@@ -90,8 +86,7 @@ Socket events have a length, an event name, and an event body.
 22;foo;{"hello":"world"};
 ```
 
-The leading number indicates the number of bytes that come after
-its semi-colon.
+The leading number indicates the number of bytes that come after its semi-colon.
 
 The event name must not contain semi-colons or be empty.
 
